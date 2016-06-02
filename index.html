@@ -1,665 +1,613 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-	<title>Top Range</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-	<link rel="stylesheet" href="css/app.min.css">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<script src="phonegap.js"></script>
-	
-	<style>
-		@-webkit-keyframes pulse {
-			0% {
-				background-color: #CCC;
-			}
-			25% {
-				background-color: #EEE;
-			}
-			50% {
-				background-color: #CCC;
-			}
-			75% {
-				background-color: #EEE;
-			}
-			100% {
-				background-color: #CCC;
-			}
-		}
-
-		.message-error-contact-us {
-			color: red;
-		}
-		
-		
-	</style>
-</head>
-
-<body>
-	<div class="app-page search-page" data-page="home">
-
-
-
-		<div class="app-topbar dark-blue">
-			<div class="app-button" data-target="register">Register</div>
-			<div class="app-title center">Top Range Shopping</div>
-			<div class="right app-button" data-target="contact-us">Contact us</div>
-
-
-
-		</div>
-		<div class="app-content">
-			<p class="app-section">
-				Welcome to the Top Range Shopping List
-			</p>
-
-
-			<p class="app-section">
-				Enter your Login Details Or Click on The Register Button to Create a New Account
-			</p>
-
-			<form class=" form app-section">
-
-
-				<input type="email" class="app-input" id="login-email" name="login-email" placeholder="Login Email">
-				<span id="login-email-error"></span>
-
-				<input type="password" class="app-input" id="login-password" name="login-password" placeholder="Password">
-				<span id="login-password-error"></span>
-
-				<div class="app-button green app-submit" id="login">Login</div>
-				<span id="login-error"></span>
-				<span id="loading"></span>
-
-			</form>
-
-		</div>
-	</div>
-
-
-	<!-- Menu pages -->
-
-
-
-
-	<!-- Register-->
-	<div class="app-page search-page" data-page="register">
-		<div class="app-topbar dark-blue">
-
-			<div class="app-button left" data-back="true">Login</div>
-			<div class="app-title">Register</div>
-		</div>
-		<div class="app-content">
-			<form class="app-section" id="form">
-
-				<div class="app-section">
-					<input type="text" class="app-input" id="first-name" name="first-name" placeholder="Firstname">
-					<span id="first-name-error"></span>
-				</div>
-				<div class="app-section">
-					<input type="text" class="app-input" id="last-name" name="last-name" placeholder="Lastname">
-					<span id="last-name-error"></span>
-				</div>
-				<div class="app-section">
-					<input type="text" class="app-input" id="username" name="username" placeholder="Username">
-					<span id="username-error"></span>
-
-				</div>
-
-				<div class="app-section">
-					<input type="email" class="app-input" id="email" name="email" placeholder=" Email">
-					<span id="email-error"></span>
-				</div>
-
-				<div class="app-section">
-					<input type="password" class="app-input" id="password" name="password" placeholder="Password">
-					<span id="password-error"></span>
-				</div>
-				<div class="app-section">
-					<input type="password" class="app-input" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
-					<span id="confirm-password-error"></span>
-				</div>
-
-				<div class="app-section">
-					<input type="text" class="app-input" id="mobile-no" name="mobile-no" placeholder="Phone no">
-					<span id="mobile-no-error"></span>
-				</div>
-
-				<div class="app-section">
-					<input type="text" class="app-input" id="address" name="address" placeholder="Address">
-					<span id="address-error"></span>
-				</div>
-
-				<div class="app-button green app-submit" id="register">Register</div>
-				<span id="register-error"></span>
-				<span id="loading"></span>
-
-
-			</form>
-
-
-
-		</div>
-	</div>
-	<!-- End Of Register -->
-
-
-
-
-
-	  <!-- Contact us-->
-	<div class="app-page search-page" data-page="contact-us">
-		<div class="app-topbar dark-blue">
-			<div class="app-button left btn btn-warning" style="text-align:center; padding-top:30px; padding-right:30px;" data-back="true"><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
-			<div class="app-title">Contact us</div>
-		</div>
-		<div class="app-content">
-		
-
-			<div class="app-section">
-				<input class="app-input" id="sender-email" placeholder="Email">
-			</div>
-
-			<form class="app-section">
-				<input class="app-input" id="subject" name="subject" placeholder="Subject">
-				<textarea class="app-input" name="message" placeholder="Message" id="message"></textarea>
-				<div class="app-button green app-submit">Send</div>
-			</form>
-		</div>
-	</div>
-	<!-- End Of Contact us -->
-
-
-	<script src="js/zepto.js"></script>
-	<script src="js/app.min.js"></script>
-	<script src="js/bootstrap.js"></script>
-	<script>
-		$(document).ready(function () {
-
-			//--> Login Form Validation and Ajax request <--//
-			App.controller('home', function (page) {
-				var login_email, login_password = "";
-
-
-				//--> Login email Validation <--//
-				$(page).find("#login-email").keyup(function () {
-
-					function isValidEmailAddress(emailAddress) {
-						var pattern = /^([a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-						return pattern.test(emailAddress);
-					}
-					if ($(page).find("#login-email").val() == "") {
-						$(page).find("#login-email-error").html("<span style='color:#A94442;'>Please your login email address</span>")
-						login_email = "";
-					} else if (!isValidEmailAddress($(page).find('#login-email').val())) {
-
-						$(page).find("#login-email-error").html("<span style='color:#A94442;'>Please a valid login email address</span>");
-						login_email = "";
-
-					} else {
-						$(page).find("#login-email-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						login_email = $(page).find("#login-email-error").val();
-					}
-				});
-
-				//--> Login Email Validation <--//
-
-				//--> Login Password Validation <--//
-
-
-				$(page).find("#login-password").keyup(function () {
-
-					if ($(page).find("#login-password").val() == "") {
-						$(page).find("#login-password-error").html("<span style='color:#A94442;'>Please your login password </span>")
-						login_password = "";
-					} else {
-						$(page).find("#login-password-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						login_password = $(page).find("#login-password-error").val();
-					}
-				});
-				//-->End of Login Password Validation <--//
-
-				$(page).find('#login')
-					.clickable()
-					.on('click', function () {
-                    
-                        if($(page).find("#login-email").val() == "" || $(page).find("#login-password").val() == "" ){
-                            
-                            $(page).find("#login-error").html("<span style='color:#A94442;'>Please Correct form error(s)</span>")
-                            
-                        }else{
-                            
-                        $(page).find("#login-error").hide();
-						$(page).find("#login").hide();
-						$(page).find("#loading").html("<img src='img/loader.gif' width='100' />");
-						$.ajax({
-							type: 'GET',
-							url: 'https://php-phexcom.c9users.io/register.php?callback=response',
-							// data to be added to query string:
-							data: {
-								login_email: $(page).find("#login-email").val(),
-								login_password: $(page).find("#login-password").val(),
-							},
-							// type of data we are expecting in return:
-							dataType: 'jsonp',
-							context: $('body'),
-							success: function (data) {
-                             
-								if (data == "invalid") {
-                                    $(page).find("#login-error").html("<span style='color:#A94442;'>Invalid Login Details!</span>");
-									$(page).find("#login-password-error").hide();
-									$(page).find("#login-email-error").hide();
-									
-									var delay = 2000;
-									setTimeout(function () {
-										App.load('home');
-									}, delay);
-									login_email = $(page).find("#email").val();
-
-								} else if (data == "logged") {
-
-									var delay = 1000;
-									setTimeout(function () {
-										window.location = "main.html";
-									}, delay);
-
-								}
-
-							},
-							error: function (xhr, type) {
-
-								$(page).find("#email-error").html("<span style='color:#A94442;'>Your email could not be verified - please try again later.</span>");
-
-							}
-
-						});
-                        }
-
-                    
-
-
-
-
-					});
-
-			});
-
-
-
-
-
-			//--> End of  login Form Validation and Ajax request <--//
-
-			//--> Start of Register Page <--//
-			App.controller('register', function (page) {
-
-				var first_name, last_name, username, email, password, confirm_password, mobile, address = "";
-
-				//-->Firstname Validation  <--//
-
-				$(page).find("#first-name").keyup(function () {
-
-					if ($(page).find("#first-name").val() == "") {
-
-						$(page).find("#first-name-error").html("<span style='color:#A94442;'>Please enter your Firstname</span>")
-						first_name = "";
-					} else {
-						$(page).find("#first-name-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						first_name = $(page).find("#first-name").val();
-					}
-				});
-
-				//--> End of firstname Validation  <--//
-
-				//--> Lastname Validation  <--//
-
-				$(page).find("#last-name").keyup(function () {
-
-					if ($(page).find("#last-name").val() == "") {
-
-						$(page).find("#last-name-error").html("<span style='color:#A94442;'>Please enter your Lastname</span>")
-						last_name = "";
-					} else {
-						$(page).find("#last-name-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						last_name = $(page).find("#last-name").val();
-					}
-				});
-				//-->End of Lastname Validation  <--//
-
-				//--> Username Validation  <--//
-				$(page).find("#username").keyup(function () {
-
-					if ($(page).find("#username").val() == "") {
-
-						$(page).find("#username-error").html("<span style='color:#A94442;'>Please enter a username</span>")
-						username = "";
-					} else if ($(page).find("#username").val().length < 4) {
-
-						$(page).find("#username-error").html("<span style='color:#A94442;'>Username must be atleast 4 charaters long</span>");
-						username = "";
-
-					} else if ($(page).find("#username").val().length > 16) {
-
-						$(page).find("#username-error").html("<span style='color:#A94442;'>Username can not be more than 16 characters</span>");
-						username = "";
-
-					} else {
-						$(page).find("#username-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						username = $(page).find("#username").val();
-					}
-				});
-
-				//--> End of Username Validation  <--//
-
-				//--> Password Validation  <--//
-
-				$(page).find("#password").keyup(function () {
-
-					if ($(page).find("#password").val() == "") {
-
-						$(page).find("#password-error").html("<span style='color:#A94442;'>Please enter a password</span>")
-						password = "";
-					} else if ($(page).find("#password").val().length < 8) {
-
-						$(page).find("#password-error").html("<span style='color:#A94442;'>Password must be atleast 8 charaters long</span>");
-						password = "";
-
-					} else if ($(page).find("#password").val().length > 16) {
-
-						$(page).find("#password-error").html("<span style='color:#A94442;'>Password can not be more than 16 characters</span>");
-						password = "";
-
-					} else {
-						$(page).find("#password-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						password = $(page).find("#password").val();
-					}
-				});
-
-				//--> End of Password Validation  <--//
-
-				//--> Confirm Password Validation  <--//
-				$(page).find("#confirm-password").keyup(function () {
-
-					if ($(page).find("#confirm-password").val() == "") {
-
-						$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Please enter a password</span>")
-
-					} else if ($(page).find("#confirm-password").val().length < 8) {
-
-						$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Password must be atleast 8 charaters long</span>");
-
-					} else if ($(page).find("#confirm-password").val().length > 16) {
-
-						$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Password can not be more than 16 characters</span>");
-
-
-					} else if ($(page).find("#confirm-password").val() !== password) {
-
-						$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Password mismatch</span>");
-
-
-					} else {
-						$(page).find("#confirm-password-error").html("<span style='color:#449D44;'>Awesome!</span>")
-
-					}
-				});
-				//--> End of Confirm Password  <--//
-
-				//--> Mobile No Validation  <--//
-				$(page).find("#mobile-no").keyup(function () {
-
-
-					if ($(page).find("#mobile-no").val() == "") {
-
-						$(page).find("#mobile-no-error").html("<span style='color:#A94442;'>Please enter your Phone no</span>")
-						first_name = "";
-
-					} else if (!$(page).find("#mobile-no").val().match(/[0-9\-\(\)\s]+/) || $(page).find("#mobile-no").val().length < 8) {
-						$(page).find("#mobile-no-error").html("<span style='color:#A94442;'>Please enter a valid Phone no</span>")
-
-
-					} else {
-						$(page).find("#mobile-no-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						mobile = $(page).find("#mobile-no").val();
-					}
-				});
-
-				//--> End of Mobile no Validation  <--//
-
-				//--> Address Validation  <--//
-				$(page).find("#address").keyup(function () {
-
-					if ($(page).find("#address").val() == "") {
-
-						$(page).find("#address-error").html("<span style='color:#A94442;'>Please a valid address</span>")
-						address = "";
-					} else {
-						$(page).find("#address-error").html("<span style='color:#449D44;'>Awesome!</span>")
-						address = $(page).find("#address").val();
-					}
-				});
-
-
-
-				//--> Email Validation  <--//
-				$(page).find("#email").keyup(function () {
-					if ($(page).find("#email").val() == "") {
-						$(page).find("#email-error").html("<span style='color:#A94442;'>Please enter your Email Address</span>");
-						email = "";
-
-					} else {
-
-
-						$.ajax({
-							type: 'GET',
-							url: 'https://php-phexcom.c9users.io/register.php?callback=response',
-							// data to be added to query string:
-							data: {
-								email: $(page).find("#email").val(),
-							},
-							// type of data we are expecting in return:
-							dataType: 'jsonp',
-							context: $('body'),
-							success: function (data) {
-
-								if (data == "exist") {
-
-									$(page).find("#email-error").html("<span style='color:#A94442;'>This email already exist!</span>");
-
-								} else if (data == "invalid") {
-
-									$(page).find("#email-error").html("<span style='color:#A94442;'>This email is invalid!</span>");
-
-								} else if (data == "success") {
-
-									$(page).find("#email-error").html("<span style='color:#449D44;'>Awesome!</span>");
-									email = $(page).find("#email").val();
-
-								}
-							},
-							error: function (xhr, type) {
-
-								$(page).find("#email-error").html("<span style='color:#A94442;'>Your email could not be verified - please try again later.</span>");
-
-							}
-
-						});
-					}
-
-				});
-
-
-
-				$(page).find("#register")
-					.clickable()
-					.on('click', function () {
-
-						if (first_name == "" || last_name == "" || username == "" || email == "" || password == "" || confirm_password == "" || mobile == "" || address == "") {
-							$(page).find("#register-error").html("<span style='color:#A94442;'>Please correct error on the form</span>");
-						} else {
-
-							$(page).find("#register").hide();
-							$(page).find("#loading").html("<img src='img/loader.gif' width='100' />");
-
-
-							$.ajax({
-								type: 'GET',
-								url: 'https://php-phexcom.c9users.io/register.php?callback=response',
-								// data to be added to query string:
-								data: {
-									firstname: $(page).find("#first-name").val(),
-									lastname: $(page).find("#last-name").val(),
-									username: $(page).find("#username").val(),
-									email: $(page).find("#email").val(),
-									password: $(page).find("#password").val(),
-									mobile: $(page).find("#mobile-no").val(),
-									address: $(page).find("#address").val(),
-								},
-								// type of data we are expecting in return:
-								dataType: 'jsonp',
-								context: $('body'),
-								success: function (data) {
-
-									if (data == "signup") {
-
-
-										$(page).find("#register-error").html("<span style='color:#449D44;'>You have been Signed Up</span> </span>").show();
-										var delay = 5000;
-										setTimeout(function () {
-											App.load('home');
-										}, delay);
-
-
-
-									} else if (data == "invalid") {
-
-										$(page).find("#register-error").html("<span style='color:#A94442;'>There was an error - Please try again.</span>");
-
-									} else {
-
-										$(page).find("#register-error").html("<span style='color:#A94442;'>There was an error - Please try again.</span>");
-									}
-
-								},
-								error: function (xhr, type) {
-
-									$(page).find("#register-error").html("<span style='color:#A94442;'>There was an error - Please try again. Or Check your Internet connection</span>");
-
-								}
-
-							})
-
-						}
-
-
-					});
-
-
-
-
-			});
-
-
-			//--> End Of Register Page  <--//
-
-			//--> Start Of Contactus page <--//
-
-			App.controller('contact-us', function (page) {
-
-				$(page).find('#send-button')
-					.clickable()
-					.on('click', function () {
-
-						var error_contact = "";
-
-						function isValidEmailAddress(emailAddress) {
-							var pattern = /^([a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-							return pattern.test(emailAddress);
-						}
-
-						if (!isValidEmailAddress($(page).find('#sender-email').val())) {
-
-							error_contact = "<br />Please Enter a Valid Email Address";
-
-						}
-
-
-						/*if ($(page).find('#sender-email').val() === "") {
-
-							error_contact = "<br />Please Enter a Valid Email Address";
-
-						}*/
-						if ($(page).find('#subject').val() === "") {
-
-							error_contact = "<br />Please enter a subject";
-
-
-						};
-						if ($(page).find('#message').val() === "") {
-
-							error_contact = "<br />Please Enter your message";
-
-						}
-
-						if (error_contact == "") {
-							$(page).find(".error-contact").hide();
-
-							$.ajax({
-								type: 'GET',
-								url: 'http://php-phexcom.c9users.io/mailer.php?callback=response',
-								// data to be added to query string:
-								data: {
-									from: $("#sender-email").val(),
-									subject: $("#subject").val(),
-									message: $("#message").val()
-								},
-								// type of data we are expecting in return:
-								dataType: 'jsonp',
-								context: $('body'),
-								success: function (data) {
-
-									if (data.success == true) {
-
-										$(page).find("#success-messages").html("Your email was sent successfully!").show();
-
-									} else {
-
-										$(page).find("#success-messages").html("Your email could not be sent - please try again later.").show();
-
-									}
-
-
-								},
-								error: function (xhr, type) {
-
-									$(page).find("#success").html("Your email could not be sent - please try again later.").show();
-
-								}
-							})
-
-
-							//$(page).find("#contact_us").empty();
-
-
-						} else {
-							$(page).find(".error-contact").html(error_contact);
-						}
-
-
-					});
-
-
-			});
-
-
-			try {
-				App.restore();
-			} catch (err) {
-				App.load('home');
-			}
-		});
-	</script>
-	
-</body>
-
+  <head>
+    <title>Top Range</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="css/app.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="phonegap.js"></script>
+    <style>
+      @-webkit-keyframes pulse {
+      0% {
+      background-color: #CCC;
+      }
+      25% {
+      background-color: #EEE;
+      }
+      50% {
+      background-color: #CCC;
+      }
+      75% {
+      background-color: #EEE;
+      }
+      100% {
+      background-color: #CCC;
+      }
+      }
+      .message-error-contact-us {
+      color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-page search-page" data-page="home">
+      <div class="app-topbar dark-blue">
+        <div class="app-button" data-target="register">Register</div>
+        <div class="app-title center">Top Range Shopping</div>
+        <div class="right app-button" data-target="contact-us">Contact us</div>
+      </div>
+      <div class="app-content">
+        <p class="app-section">
+          Welcome to the Top Range Shopping List
+        </p>
+        <p class="app-section">
+          Enter your Login Details Or Click on The Register Button to Create a New Account
+        </p>
+        <form class=" form app-section">
+          <input type="email" class="app-input" id="login-email" name="login-email" placeholder="Login Email">
+          <span id="login-email-error"></span>
+          <input type="password" class="app-input" id="login-password" name="login-password" placeholder="Password">
+          <span id="login-password-error"></span>
+          <div class="app-button green app-submit" id="login">Login</div>
+          <span id="login-error"></span>
+          <span id="loading"></span>
+        </form>
+      </div>
+    </div>
+    <!-- Menu pages -->
+    <!-- Register-->
+    <div class="app-page search-page" data-page="register">
+      <div class="app-topbar dark-blue">
+        <div class="app-button left" data-back="true">Login</div>
+        <div class="app-title">Register</div>
+      </div>
+      <div class="app-content">
+        <form class="app-section" id="form">
+          <div class="app-section">
+            <input type="text" class="app-input" id="first-name" name="first-name" placeholder="Firstname">
+            <span id="first-name-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="text" class="app-input" id="last-name" name="last-name" placeholder="Lastname">
+            <span id="last-name-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="text" class="app-input" id="username" name="username" placeholder="Username">
+            <span id="username-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="email" class="app-input" id="email" name="email" placeholder=" Email">
+            <span id="email-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="password" class="app-input" id="password" name="password" placeholder="Password">
+            <span id="password-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="password" class="app-input" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+            <span id="confirm-password-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="text" class="app-input" id="mobile-no" name="mobile-no" placeholder="Phone no">
+            <span id="mobile-no-error"></span>
+          </div>
+          <div class="app-section">
+            <input type="text" class="app-input" id="address" name="address" placeholder="Address">
+            <span id="address-error"></span>
+          </div>
+          <div class="app-button green app-submit" id="register">Register</div>
+          <span id="register-error"></span>
+          <span id="loading"></span>
+        </form>
+      </div>
+    </div>
+    <!-- End Of Register -->
+    <!-- Contact us-->
+    <div class="app-page search-page" data-page="contact-us">
+      <div class="app-topbar dark-blue">
+        <div class="app-button left btn btn-warning" style="text-align:center; padding-top:30px; padding-right:30px;" data-back="true"><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
+        <div class="app-title">Contact us</div>
+      </div>
+      <div class="app-content">
+        <div class="app-section">
+          <input class="app-input" id="sender-email" placeholder="Email">
+        </div>
+        <form class="app-section">
+          <input class="app-input" id="subject" name="subject" placeholder="Subject">
+          <textarea class="app-input" name="message" placeholder="Message" id="message"></textarea>
+          <div class="app-button green app-submit">Send</div>
+        </form>
+      </div>
+    </div>
+    <!-- End Of Contact us -->
+    <script src="js/zepto.js"></script>
+    <script src="js/app.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script>
+      $(document).ready(function () {
+      
+      	//--> Login Form Validation and Ajax request <--//
+      	App.controller('home', function (page) {
+      		var login_email, login_password = "";
+      
+      
+      		//--> Login email Validation <--//
+      		$(page).find("#login-email").keyup(function () {
+      
+      			function isValidEmailAddress(emailAddress) {
+      				var pattern = /^([a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+      				return pattern.test(emailAddress);
+      			}
+      			if ($(page).find("#login-email").val() == "") {
+      				$(page).find("#login-email-error").html("<span style='color:#A94442;'>Please your login email address</span>")
+      				login_email = "";
+      			} else if (!isValidEmailAddress($(page).find('#login-email').val())) {
+      
+      				$(page).find("#login-email-error").html("<span style='color:#A94442;'>Please a valid login email address</span>");
+      				login_email = "";
+      
+      			} else {
+      				$(page).find("#login-email-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				login_email = $(page).find("#login-email-error").val();
+      			}
+      		});
+      
+      		//--> Login Email Validation <--//
+      
+      		//--> Login Password Validation <--//
+      
+      
+      		$(page).find("#login-password").keyup(function () {
+      
+      			if ($(page).find("#login-password").val() == "") {
+      				$(page).find("#login-password-error").html("<span style='color:#A94442;'>Please your login password </span>")
+      				login_password = "";
+      			} else {
+      				$(page).find("#login-password-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				login_password = $(page).find("#login-password-error").val();
+      			}
+      		});
+      		//-->End of Login Password Validation <--//
+      
+      		$(page).find('#login')
+      			.clickable()
+      			.on('click', function () {
+                        
+                            if($(page).find("#login-email").val() == "" || $(page).find("#login-password").val() == "" ){
+                                
+                                $(page).find("#login-error").html("<span style='color:#A94442;'>Please Correct form error(s)</span>")
+                                
+                            }else{
+                                
+                            $(page).find("#login-error").hide();
+      				$(page).find("#login").hide();
+      				$(page).find("#loading").html("<img src='img/loader.gif' width='100' />");
+      				$.ajax({
+      					type: 'GET',
+      					url: 'https://php-phexcom.c9users.io/register.php?callback=response',
+      					// data to be added to query string:
+      					data: {
+      						login_email: $(page).find("#login-email").val(),
+      						login_password: $(page).find("#login-password").val(),
+      					},
+      					// type of data we are expecting in return:
+      					dataType: 'jsonp',
+      					context: $('body'),
+      					success: function (data) {
+                                 
+      						if (data == "invalid") {
+                                        $(page).find("#login-error").html("<span style='color:#A94442;'>Invalid Login Details!</span>");
+      							$(page).find("#login-password-error").hide();
+      							$(page).find("#login-email-error").hide();
+      							
+      							var delay = 2000;
+      							setTimeout(function () {
+      								App.load('home');
+      							}, delay);
+      							login_email = $(page).find("#email").val();
+      
+      						} else if (data == "logged") {
+      
+      							var delay = 1000;
+      							setTimeout(function () {
+      								window.location = "main.html";
+      							}, delay);
+      
+      						}
+      
+      					},
+      					error: function (xhr, type) {
+      
+      						$(page).find("#email-error").html("<span style='color:#A94442;'>Your email could not be verified - please try again later.</span>");
+      
+      					}
+      
+      				});
+                            }
+      
+                        
+      
+      
+      
+      
+      			});
+      
+      	});
+      
+      
+      
+      
+      
+      	//--> End of  login Form Validation and Ajax request <--//
+      
+      	//--> Start of Register Page <--//
+      	App.controller('register', function (page) {
+      
+      		var first_name, last_name, username, email, password, confirm_password, mobile, address = "";
+      
+      		//-->Firstname Validation  <--//
+      
+      		$(page).find("#first-name").keyup(function () {
+      
+      			if ($(page).find("#first-name").val() == "") {
+      
+      				$(page).find("#first-name-error").html("<span style='color:#A94442;'>Please enter your Firstname</span>")
+      				first_name = "";
+      			} else {
+      				$(page).find("#first-name-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				first_name = $(page).find("#first-name").val();
+      			}
+      		});
+      
+      		//--> End of firstname Validation  <--//
+      
+      		//--> Lastname Validation  <--//
+      
+      		$(page).find("#last-name").keyup(function () {
+      
+      			if ($(page).find("#last-name").val() == "") {
+      
+      				$(page).find("#last-name-error").html("<span style='color:#A94442;'>Please enter your Lastname</span>")
+      				last_name = "";
+      			} else {
+      				$(page).find("#last-name-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				last_name = $(page).find("#last-name").val();
+      			}
+      		});
+      		//-->End of Lastname Validation  <--//
+      
+      		//--> Username Validation  <--//
+      		$(page).find("#username").keyup(function () {
+      
+      			if ($(page).find("#username").val() == "") {
+      
+      				$(page).find("#username-error").html("<span style='color:#A94442;'>Please enter a username</span>")
+      				username = "";
+      			} else if ($(page).find("#username").val().length < 4) {
+      
+      				$(page).find("#username-error").html("<span style='color:#A94442;'>Username must be atleast 4 charaters long</span>");
+      				username = "";
+      
+      			} else if ($(page).find("#username").val().length > 16) {
+      
+      				$(page).find("#username-error").html("<span style='color:#A94442;'>Username can not be more than 16 characters</span>");
+      				username = "";
+      
+      			} else {
+      				$(page).find("#username-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				username = $(page).find("#username").val();
+      			}
+      		});
+      
+      		//--> End of Username Validation  <--//
+      
+      		//--> Password Validation  <--//
+      
+      		$(page).find("#password").keyup(function () {
+      
+      			if ($(page).find("#password").val() == "") {
+      
+      				$(page).find("#password-error").html("<span style='color:#A94442;'>Please enter a password</span>")
+      				password = "";
+      			} else if ($(page).find("#password").val().length < 8) {
+      
+      				$(page).find("#password-error").html("<span style='color:#A94442;'>Password must be atleast 8 charaters long</span>");
+      				password = "";
+      
+      			} else if ($(page).find("#password").val().length > 16) {
+      
+      				$(page).find("#password-error").html("<span style='color:#A94442;'>Password can not be more than 16 characters</span>");
+      				password = "";
+      
+      			} else {
+      				$(page).find("#password-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				password = $(page).find("#password").val();
+      			}
+      		});
+      
+      		//--> End of Password Validation  <--//
+      
+      		//--> Confirm Password Validation  <--//
+      		$(page).find("#confirm-password").keyup(function () {
+      
+      			if ($(page).find("#confirm-password").val() == "") {
+      
+      				$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Please enter a password</span>")
+      
+      			} else if ($(page).find("#confirm-password").val().length < 8) {
+      
+      				$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Password must be atleast 8 charaters long</span>");
+      
+      			} else if ($(page).find("#confirm-password").val().length > 16) {
+      
+      				$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Password can not be more than 16 characters</span>");
+      
+      
+      			} else if ($(page).find("#confirm-password").val() !== password) {
+      
+      				$(page).find("#confirm-password-error").html("<span style='color:#A94442;'>Password mismatch</span>");
+      
+      
+      			} else {
+      				$(page).find("#confirm-password-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      
+      			}
+      		});
+      		//--> End of Confirm Password  <--//
+      
+      		//--> Mobile No Validation  <--//
+      		$(page).find("#mobile-no").keyup(function () {
+      
+      
+      			if ($(page).find("#mobile-no").val() == "") {
+      
+      				$(page).find("#mobile-no-error").html("<span style='color:#A94442;'>Please enter your Phone no</span>")
+      				first_name = "";
+      
+      			} else if (!$(page).find("#mobile-no").val().match(/[0-9\-\(\)\s]+/) || $(page).find("#mobile-no").val().length < 8) {
+      				$(page).find("#mobile-no-error").html("<span style='color:#A94442;'>Please enter a valid Phone no</span>")
+      
+      
+      			} else {
+      				$(page).find("#mobile-no-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				mobile = $(page).find("#mobile-no").val();
+      			}
+      		});
+      
+      		//--> End of Mobile no Validation  <--//
+      
+      		//--> Address Validation  <--//
+      		$(page).find("#address").keyup(function () {
+      
+      			if ($(page).find("#address").val() == "") {
+      
+      				$(page).find("#address-error").html("<span style='color:#A94442;'>Please a valid address</span>")
+      				address = "";
+      			} else {
+      				$(page).find("#address-error").html("<span style='color:#449D44;'>Awesome!</span>")
+      				address = $(page).find("#address").val();
+      			}
+      		});
+      
+      
+      
+      		//--> Email Validation  <--//
+      		$(page).find("#email").keyup(function () {
+      			if ($(page).find("#email").val() == "") {
+      				$(page).find("#email-error").html("<span style='color:#A94442;'>Please enter your Email Address</span>");
+      				email = "";
+      
+      			} else {
+      
+      
+      				$.ajax({
+      					type: 'GET',
+      					url: 'https://php-phexcom.c9users.io/register.php?callback=response',
+      					// data to be added to query string:
+      					data: {
+      						email: $(page).find("#email").val(),
+      					},
+      					// type of data we are expecting in return:
+      					dataType: 'jsonp',
+      					context: $('body'),
+      					success: function (data) {
+      
+      						if (data == "exist") {
+      
+      							$(page).find("#email-error").html("<span style='color:#A94442;'>This email already exist!</span>");
+      
+      						} else if (data == "invalid") {
+      
+      							$(page).find("#email-error").html("<span style='color:#A94442;'>This email is invalid!</span>");
+      
+      						} else if (data == "success") {
+      
+      							$(page).find("#email-error").html("<span style='color:#449D44;'>Awesome!</span>");
+      							email = $(page).find("#email").val();
+      
+      						}
+      					},
+      					error: function (xhr, type) {
+      
+      						$(page).find("#email-error").html("<span style='color:#A94442;'>Your email could not be verified - please try again later.</span>");
+      
+      					}
+      
+      				});
+      			}
+      
+      		});
+      
+      
+      
+      		$(page).find("#register")
+      			.clickable()
+      			.on('click', function () {
+      
+      				if (first_name == "" || last_name == "" || username == "" || email == "" || password == "" || confirm_password == "" || mobile == "" || address == "") {
+      					$(page).find("#register-error").html("<span style='color:#A94442;'>Please correct error on the form</span>");
+      				} else {
+      
+      					$(page).find("#register").hide();
+      					$(page).find("#loading").html("<img src='img/loader.gif' width='100' />");
+      
+      
+      					$.ajax({
+      						type: 'GET',
+      						url: 'https://php-phexcom.c9users.io/register.php?callback=response',
+      						// data to be added to query string:
+      						data: {
+      							firstname: $(page).find("#first-name").val(),
+      							lastname: $(page).find("#last-name").val(),
+      							username: $(page).find("#username").val(),
+      							email: $(page).find("#email").val(),
+      							password: $(page).find("#password").val(),
+      							mobile: $(page).find("#mobile-no").val(),
+      							address: $(page).find("#address").val(),
+      						},
+      						// type of data we are expecting in return:
+      						dataType: 'jsonp',
+      						context: $('body'),
+      						success: function (data) {
+      
+      							if (data == "signup") {
+      
+      
+      								$(page).find("#register-error").html("<span style='color:#449D44;'>You have been Signed Up</span> </span>").show();
+      								var delay = 5000;
+      								setTimeout(function () {
+      									App.load('home');
+      								}, delay);
+      
+      
+      
+      							} else if (data == "invalid") {
+      
+      								$(page).find("#register-error").html("<span style='color:#A94442;'>There was an error - Please try again.</span>");
+      
+      							} else {
+      
+      								$(page).find("#register-error").html("<span style='color:#A94442;'>There was an error - Please try again.</span>");
+      							}
+      
+      						},
+      						error: function (xhr, type) {
+      
+      							$(page).find("#register-error").html("<span style='color:#A94442;'>There was an error - Please try again. Or Check your Internet connection</span>");
+      
+      						}
+      
+      					})
+      
+      				}
+      
+      
+      			});
+      
+      
+      
+      
+      	});
+      
+      
+      	//--> End Of Register Page  <--//
+      
+      	//--> Start Of Contactus page <--//
+      
+      	App.controller('contact-us', function (page) {
+      
+      		$(page).find('#send-button')
+      			.clickable()
+      			.on('click', function () {
+      
+      				var error_contact = "";
+      
+      				function isValidEmailAddress(emailAddress) {
+      					var pattern = /^([a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+      					return pattern.test(emailAddress);
+      				}
+      
+      				if (!isValidEmailAddress($(page).find('#sender-email').val())) {
+      
+      					error_contact = "<br />Please Enter a Valid Email Address";
+      
+      				}
+      
+      
+      				/*if ($(page).find('#sender-email').val() === "") {
+      
+      					error_contact = "<br />Please Enter a Valid Email Address";
+      
+      				}*/
+      				if ($(page).find('#subject').val() === "") {
+      
+      					error_contact = "<br />Please enter a subject";
+      
+      
+      				};
+      				if ($(page).find('#message').val() === "") {
+      
+      					error_contact = "<br />Please Enter your message";
+      
+      				}
+      
+      				if (error_contact == "") {
+      					$(page).find(".error-contact").hide();
+      
+      					$.ajax({
+      						type: 'GET',
+      						url: 'http://php-phexcom.c9users.io/mailer.php?callback=response',
+      						// data to be added to query string:
+      						data: {
+      							from: $("#sender-email").val(),
+      							subject: $("#subject").val(),
+      							message: $("#message").val()
+      						},
+      						// type of data we are expecting in return:
+      						dataType: 'jsonp',
+      						context: $('body'),
+      						success: function (data) {
+      
+      							if (data.success == true) {
+      
+      								$(page).find("#success-messages").html("Your email was sent successfully!").show();
+      
+      							} else {
+      
+      								$(page).find("#success-messages").html("Your email could not be sent - please try again later.").show();
+      
+      							}
+      
+      
+      						},
+      						error: function (xhr, type) {
+      
+      							$(page).find("#success").html("Your email could not be sent - please try again later.").show();
+      
+      						}
+      					})
+      
+      
+      					//$(page).find("#contact_us").empty();
+      
+      
+      				} else {
+      					$(page).find(".error-contact").html(error_contact);
+      				}
+      
+      
+      			});
+      
+      
+      	});
+      
+      
+      	try {
+      		App.restore();
+      	} catch (err) {
+      		App.load('home');
+      	}
+      });
+    </script>
+  </body>
 </html>
