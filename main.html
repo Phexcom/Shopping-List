@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Top Range</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+	<link rel="stylesheet" href="css/app.min.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<script src="js/yui-min.js"></script>
+	<script src="phonegap.js"></script>
+	
+	
+	
+	
+
+	
+	
+
+	<style>
+		@-webkit-keyframes pulse {
+			0% {
+				background-color: #CCC;
+			}
+			25% {
+				background-color: #EEE;
+			}
+			50% {
+				background-color: #CCC;
+			}
+			75% {
+				background-color: #EEE;
+			}
+			100% {
+				background-color: #CCC;
+			}
+		}
+
+		#logout {
+			/*background: #F2DEDE;*/
+			/*color: #B84442;*/
+			/*font-size: 0.9em;*/
+			/*text-align:center;*/
+		}
+        #items-selection{
+            width: auto;
+        }
+        
+        .list-view {
+        	border: 2px solid #334455;
+        	padding: 1em;
+        	cursor: pointer;
+        }
+        
+        .list-view:hover {
+        	border: 4px solid #334455;
+        }
+        
+        .hide-me {
+        	visibility: none;
+        	display: none;
+        }
+        
+        yui3-button {
+   			 margin:10px 0px 10px 0px;
+   			 color: #fff;
+   			 background-color: #3476b7;
+		}
+		.center {
+		text-align: center;
+		}
+        
+	</style>
+</head>
+
+<body  class="yui3-skin-sam">
+	<div class="app-page search-page" data-page="home">
+
+
+
+		<div class="app-topbar dark-blue">
+			<div class="app-button btn btn-success" data-target="lists">Menu</div>
+			<div class="app-title center">Top Range Shopping</div>
+			<button class="right app-menu app-button btn btn-danger" id="logout">Logout</button>
+
+
+
+		</div>
+		<div class="app-content">
+			<p class="app-section ">
+				Welcome to the Top Range Shopping List
+			</p>
+
+			
+			<div class="app-section content view">
+
+			</div>
+			
+			
+			
+			
+
+		</div>
+	</div>
+
+
+
+	<div class="app-page" data-page="lists">
+		<div class="app-topbar dark-blue">
+			<div class="app-button left btn btn-warning" style="text-align:center; padding-top:30px; padding-right:30px;" data-back="true"><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
+			<div class="app-title"><span class="app-icon"></span>Menu</div>
+		</div>
+
+		<div class="app-content">
+
+			<ul class="app-list">
+				<label>Top Range Shopping List</label>
+				<li class="app-button" data-target="home">Home</li>
+				<li class="app-button" data-target="create-new-list">Create New List</li>
+				<li class="app-button" data-target="view-list">View Shopping Events</li>
+				<li class="app-button" data-target="next-shopping">Next Shopping</li>
+				<li class="app-button" data-target="contact-us">Contact us</li>
+
+			</ul>
+		</div>
+	</div>
+
+	<div class="app-page" data-page="buttons">
+
+		
+
+	<!-- Menu pages -->
+
+
+
+	<!-- Create a New List -->
+	<div class="app-page search-page" data-page="create-new-list">
+		<div class="app-topbar dark-blue">
+			<div class="app-button left btn btn-warning" data-back="true" style="text-align:center; padding-top:30px; padding-right:30px;" ><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
+			<div class="app-title">Create a new list</div>
+		</div>
+		<div class="app-content">
+		
+		
+		<form>
+			
+			<div class="app-section">
+
+				<input class="app-input" id="list-name" name="listname" placeholder="List Name">
+				<span id="list-name-error"></span>
+			</div>
+			<div class="app-section">
+				<input class="app-input" id="short-description" name="desc" placeholder="Short Description">
+				<span id="short-description-error"></span>
+			</div>
+			<div class="app-section" id="items-selection">
+                
+            
+
+				<label>Select an Item:</label>
+                <br/>
+				<select id="items" name="item[]">
+
+					<option value="Vegetable">Vegetables</option>
+					<option value="fruits">Fruits</option>
+					<option value="Beverages">beverages</option>
+					<option value="Frozen Food & Ice Cream">Frozen Food & Ice Cream</option>
+					<option value="Bread & Bakery">Bread & Bakery</option>
+					<option value="Seafood">Sea Food</option>
+					<option value=" Dairy & Eggs">Dairy & Eggs</option>
+					<option value="Clothing">Clothing</option>
+					<option value="Cosmetics">Cosmetics</option>
+					<option value="Footwear">Footwear</option>
+					
+			        <option value="Canned products">Canned products</option>
+			        <option value="Drinks">Drinks</option>
+			        <option value="House holds">House holds</option>
+			        <option value="Stationery">Stationery</option>
+			        <option value="Accessories">Accessories</option>
+			        <option value="Child products">Child products</option>
+			        <option value="Grocery">Grocery</option>
+				</select>
+				<br/>
+				<legend>Item type: </legend>
+				<input type="text" name="subitem[]" placeholder="Type Item">
+                <br/>
+				<legend>Quantity: </legend>
+				<input type="number" value="1" name="qty[]" max="10" min="1" id="quantity">
+                <br/>
+                
+                
+			</div>
+			<div class="app-section app-button dark-blue app-submit" id="add-more">
+				<strong>Add More Item </strong>
+			</div>
+			<div class="app-section app-button red app-submit" id="Deleteitem">
+				<strong>Delete item</strong>
+			</div>
+
+			<div class="app-section app-button green app-submit" id="save">
+				<strong>Save</strong>
+			</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- End Of Create a New List -->
+
+	<!-- View List -->
+	<div class="app-page search-page" data-page="view-list">
+		<div class="app-topbar dark-blue">
+			<div class="app-button left btn btn-warning" style="text-align:center; padding-top:30px; padding-right:30px;" data-back="true"><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
+			<div class="app-title">Next Shopping</div>
+		</div>
+		<div class="app-content">
+		
+		<div class="app-section mainview">
+       
+            </div>
+            
+            
+     	
+
+		</div>
+	</div>
+	<!-- End Of View List-->
+
+	<!-- Next Shopping-->
+	<div class="app-page search-page" data-page="next-shopping" id="next-shopping">
+		<div class="app-topbar dark-blue">
+			<div class="app-button left btn btn-warning"  style="text-align:center; padding-top:30px; padding-right:30px;" data-back="true"><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
+			<div class="app-title">Next Shopping</div>
+		</div>
+		<div class="app-content " >
+			
+			
+			<div class=" event">
+				<div class="event-select"></div>
+					<div class="app-section">
+					<input type="text" class="app-input" id="event-desc" name="address" placeholder="Shopping Description">
+					<span id="event-desc-error"></span>
+					</div>
+					<div class=" app-section event-button"><button class=" app-section btn btn-success app-submit">Set Reminder</button></div>
+ 					
+				
+			</div>
+			
+			
+			
+		
+
+		</div>
+	</div>
+	<!-- End Of Next Shopping -->
+
+	<!-- Contact us-->
+	<div class="app-page search-page" data-page="contact-us">
+		<div class="app-topbar dark-blue">
+			<div class="app-button left btn btn-warning" style="text-align:center; padding-top:30px; padding-right:30px;" data-back="true"><strong style="text-align:center;position: relative;bottom:10px;">Back</strong></div>
+			<div class="app-title">Contact us</div>
+		</div>
+		<div class="app-content">
+			<input class="app-input" type="search" placeholder="Search..">
+
+			<div class="app-section">
+				<input class="app-input" id="sender-email" placeholder="Email">
+			</div>
+
+			<form class="app-section">
+				<input class="app-input" id="subject" name="subject" placeholder="Subject">
+				<textarea class="app-input" name="message" placeholder="Message" id="message"></textarea>
+				<div class="app-button green app-submit">Send</div>
+			</form>
+		</div>
+	</div>
+	<!-- End Of Contact us -->
+
+	<script src="js/zepto.js"></script>
+	<script src="js/app.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+
+
+
+	
+	<script>
+		App.controller('home', function (page) {
+			 
+			
+             
+                    $.ajax({
+							type: 'GET',
+							url: 'https://php-phexcom.c9users.io/view.php?callback=response',
+							// type of data we are expecting in return:
+							dataType: 'jsonp',
+							context: $('body'),
+							success: function (data) {
+                                
+                                
+                                $.each(data.info, function(i){
+                                    
+                                    var arrayInfo = [];
+                                    
+                                    arrayInfo[i] ={
+                                       
+                                       "Listname": this.listname,
+                                       "Description": this.description,
+                                       "Item": this.item,
+                                       "Itemtype": this.itemtype,
+                                       "Quantity": this.qty,
+                                       "Date": this.date,
+                                       "id": this.id,
+                                       
+                                       };
+                                  
+                                       $(page).find(".view").append("<div class='list-group'><a id='bt_"+i+"'  class='list-group-item'>"+
+                                                                   
+                                                                    "<h4 class='list-group-item-heading'>"+data.info[i].listname+"</h4> </p><span class='label label-info' style='float:right;'>"+data.info[i].date+"</span>"+
+                                                                    "<br/'>"+
+                                                                    "<p class='list-group-item-text'>"+data.info[i].description+"</p>"+
+                                                                   
+                                                                    
+                                                                    
+                                                                    "</a></div>");
+                                    
+                                       $("#bt_"+i).on('click', function(e){
+                                        show_data(arrayInfo[i]);
+                                    });
+                                    
+                                });
+                                function show_data(dataInfo){
+                                     $(page).find(".view").html('<div class="list-group description">'+
+                                                                '<table class="table table-striped table-bordered" >'+
+                                                                '<tr><th> List Name: </th><td>'+dataInfo.Listname+'</td></tr>'+
+                                                                '<tr><th> Description: </th><td>'+dataInfo.Description+'</td></tr>'+
+                                                                '<tr><th> List Item: </th><td>'+dataInfo.Item+'</td></tr>'+
+                                                                '<tr><th> Item type: </th><td>'+dataInfo.Itemtype+'</td></tr>'+
+                                                                '<tr><th> Quantity: </th><td>'+dataInfo.Quantity+'</td></tr>'+
+                                                                '<tr><th> Date Created: </th><td>'+dataInfo.Date+'</td></tr>'+
+                                                                ' <tr ><td colspan="2"><button type="button" class="btn btn-warning" id="edit_'+dataInfo.id+'" style="float:left;">Rename List</button><button type="button" class="btn btn-danger" id="delete_'+dataInfo.id+'" style="float:right;">Delete</button></th></tr>'+
+                                                                ''+
+                                                                '</table>'+
+                                                                '</div>'); 
+                                //Ajax Request to delete List
+                                      $("#delete_"+dataInfo.id).on('click', function(e){
+                                            $.ajax({
+							type: 'GET',
+							url: 'https://php-phexcom.c9users.io/delete.php?callback=response',
+							// data to be added to query string:
+							data: {
+								id: dataInfo.id,
+							},
+							// type of data we are expecting in return:
+							dataType: 'jsonp',
+							context: $('body'),
+							success: function (data) {
+                                
+                               
+
+								if (data == "delete") {
+                                    
+                                    App.load('home');
+
+								} else if (data == "invalid") {
+
+									$(page).find("#email-error").html("<span style='color:#A94442;'>Unable to delete list!</span>");
+
+								} 
+							},
+							error: function (xhr, type) {
+
+								$(page).find("#email-error").html("<span style='color:#A94442;'>List could not be deleted - please try again later.</span>");
+
+							}
+
+						});
+                                    });
+                                    
+                                    // End of Delete List Ajax Function
+                                    
+                                    // edit List Function
+                                    
+                                    $("#edit_"+dataInfo.id).on('click', function(e){
+                                        $(page).find(".view").html('<div class="app-topbar white">'+
+                                                                   '<div class="app-title">Edit '+dataInfo.Listname+' list</div>'+
+                                                                   '</div>'+
+                                                                   '<form id="edit-item">'+
+                                                                   '<div class="app-section">'+
+                                                                   '<input class="app-input" id="list-name" name="edit-listname" placeholder="Listname: ' +dataInfo.Listname+'">'+
+                                                                   '<span id="list-name-error"></span></div>'+
+                                                                   '<div class="app-section">'+
+                                                                   '<input class="app-input" id="list-name" name="edit-description" placeholder="Description: ' +dataInfo.Description+'">'+
+                                                                   '<span id="list-name-error"></span></div>'+
+                                                                   '<input type="hidden"  name="item-id" value='+dataInfo.id+'>'+
+                                                                   '<div class="app-section app-button green app-submit" id="save-edit">'+
+				                                                   '<strong>Save</strong>'+
+			                                                       '</div>'+
+			                                                       '</form>'+
+			                                                       '</div>'
+                                                                  
+                                                                  );
+                                         $("#save-edit").on('click', function(e){
+                                         
+                                      
+                                         
+                                             $.ajax({
+                                            type: 'GET',
+                                            url: 'https://php-phexcom.c9users.io/update.php?callback=response',
+                                            // data to be added to query string:
+                                            
+                                                data: $('#edit-item').serialize(),
+                                                
+                                        
+                                            // type of data we are expecting in return:
+							                 dataType: 'jsonp',
+							                 context: $('body'),
+							                 success: function (data) {
+
+                                                 if (data == "update") {
+
+									                   App.load('home');
+
+                                                 } else if (data == "invalid") {
+
+									                   $(page).find("#email-error").html("<span style='color:#A94442;'>Unable to Rename list!</span>");
+
+								                    } 
+							                     },   
+                                                    error: function (xhr, type) {
+
+                                                        $(page).find("#email-error").html("<span style='color:#A94442;'>List could not be deleted - please try again later.</span>");
+
+                                            }
+
+						});
+
+                                         
+                                     });
+                                    
+                                    });
+                                    
+                                    // End of edit List Function
+                                    
+                                  
+                                    
+                                     
+                                    
+                                }    
+                               
+      
+							},
+							error: function (xhr, type) {
+
+								$(page).find("#email-error").html("<span style='color:#A94442;'>Please try again later.</span>");
+
+							}
+
+						});
+            
+//            
+
+
+
+			$(page).find('.app-menu')
+				.on('click', function () {
+					App.dialog({
+						doButton: 'Are you sure you want to Logout',
+						okButton: 'Yes',
+						cancelButton: 'Cancel'
+					}, function (choice) {
+
+						if (choice == "ok") {
+							window.location = "index.html";
+							$.ajax({
+								type: 'GET',
+								url: 'https://php-phexcom.c9users.io/main.php?callback=response',
+								// data to be added to query string:
+								data: {
+									logout: "1"
+								},
+								// type of data we are expecting in return:
+								dataType: 'jsonp',
+								context: $('body'),
+								success: function (data) {
+
+									if (data == "logout") {
+										window.location.href = "/index.html";
+									}
+
+
+								},
+								error: function (xhr, type) {
+
+									$(page).find("#email-error").html("<span style='color:#A94442;'>Your email could not be verified - please try again later.</span>");
+
+								}
+
+							});
+						}
+
+
+					});
+				});
+			// put stuff here
+
+		});
+
+		App.controller('page2', function (page) {
+			// put stuff here
+
+		});
+
+		App.controller('register', function (page) {
+			// put stuff here
+
+		});
+
+
+
+
+		App.controller('create-new-list', function (page) {
+
+
+
+
+			$(page).find("#list-name").keyup(function () {
+
+				if ($(page).find("#list-name").val() == "") {
+
+					$(page).find("#list-name-error").html("<span style='color:#A94442;'>Please enter a name for your list</span>")
+
+				} else {
+
+
+				}
+
+
+
+
+
+
+
+
+			});
+
+
+				 var counter = 1;
+                 var limit = 5;
+                
+                
+
+			$(page).find("#add-more").clickable()
+				.on('click', function addmore() {
+                
+             
+                 if (counter > limit)  {
+                      alert("You have reached the limit of adding " + counter + " inputs");
+                }else{
+                    $(page).find("#items-selection").append('<br/><br/><label>Select an Item:</label> <br/><select id="items1 name="item[]"><option value="Vegetable">Vegetables</option><option value="fruits">Fruits</option><option value="Beverages">beverages</option><option value="Frozen Food & Ice Cream">Frozen Food & Ice Cream</option><option value="Bread & Bakery">Bread & Bakery</option><option value="Seafood">Sea Food</option><option value=" Dairy & Eggs">Dairy & Eggs</option><option value="Clothing">Clothing</option><option value="Cosmetics">Cosmetics</option><option value="Footwear">Footwear</option><option value="Tobacco">Tobacco</option></select><br/><legend>Item type: </legend><input type="text" name="subitem[]" placeholder="Type Item"> <br/><legend>Quantity: </legend><input type="number" value="1" name="qty[]" max="10" min="1" id="quantity"><br/>');
+                        
+                   
+                    
+                   counter++;
+
+                    
+                }
+                    
+
+					
+                   
+
+
+				});
+
+			$(page).find("#remove").clickable()
+				.on('click', function () {
+
+
+				});
+
+			
+			$(page).find("#save").clickable()
+				.on('click', function () {
+                
+                
+                if($(page).find("#list-name").val() == "" ){
+                    
+                    $(page).find("#list-name-error").html("<span style='color:#A94442;'>Please enter a name for your list</span>");
+                    
+                    
+                }else{
+                    
+                    
+                     $(page).find("#list-name-error").hide();
+                     
+                 
+                    
+                    $.ajax({
+							type: 'GET',
+							url: 'https://php-phexcom.c9users.io/main.php?callback=response',
+							// data to be added to query string:
+							data: $('form').serializeArray(),
+							// type of data we are expecting in return:
+							dataType: 'jsonp',
+							context: $('body'),
+							success: function (data) {
+                                
+                               if (data == "success") {
+                                    
+                                    App.load('home');
+
+								} else if (data == "failed") {
+
+									$(page).find("#email-error").html("<span style='color:#A94442;'>Unable to create list!</span>");
+
+								} 
+                                
+
+							},
+							error: function (xhr, type) {
+
+								$(page).find("#email-error").html("<span style='color:#A94442;'>Could not create list - please try again later.</span>");
+
+							}
+
+						});
+                    
+                    
+                    
+                    
+                }
+                
+
+				});
+
+
+
+
+
+
+
+		});
+
+		App.controller('view-list', function (page) {
+            
+                  $.ajax({
+							type: 'GET',
+							url: 'https://php-phexcom.c9users.io/viewReminder.php?callback=response',
+							// type of data we are expecting in return:
+							dataType: 'jsonp',
+							context: $('body'),
+							success: function (data) {
+                                
+                                console.log(data.shopping);
+                                $.each(data.shopping, function(i){
+                                    
+                                    var arrayShopping = [];
+                                    
+                                    arrayShopping[i] ={
+                                       
+                                       "Eventid": this.event_id,
+                                       "Eventdescription": this.reminder_desc,
+                                       "Eventdate": this.reminder_date,
+                                       
+                                       
+                                       };
+                                  
+                                       $(page).find(".mainview").append("<div class='list-group'><a id='bt_"+i+"'  class='list-group-item'>"+
+                                                                   
+                                                                    "<h4 class='list-group-item-heading'>"+data.shopping[i].reminder_desc+"</h4> </p><span class='label label-info' style=''>"+data.shopping[i].reminder_date+"</span><button class='btn btn-danger btn-sm' id='delete_"+data.shopping[i].event_id+"' style='float:right'>Delete</button>"+
+                                    
+                                                                    "</a></div>");
+                                                                    
+                                              $("#bt_"+i).on('click', function(e){
+                                        			show_data(arrayShopping[i]);
+                                			  });
+                                			  
+                                			   function show_data(dataInfo){
+                                			   	
+                                			   
+                                                                    
+                                       //Ajax Request to delete Next Shopping
+                                      $("#delete_"+dataInfo.Eventid).on('click', function(e){
+                                      
+                           
+                                            $.ajax({
+												type: 'GET',
+												url: 'https://php-phexcom.c9users.io/deleteReminder.php?callback=response',
+												// data to be added to query string:
+												data: {
+												id: dataInfo.Eventid,
+												},
+												// type of data we are expecting in return:
+											dataType: 'jsonp',
+											context: $('body'),
+											success: function (data) {
+                                
+                               //http://www.devarticles.com/c/a/MySQL/Setup-Your-Personal-Reminder-System-Using-PHP/1/
+	
+											if (data == "delete") {
+                                    
+                                		   App.load('view-list');
+
+											} else if (data == "invalid") {
+
+									$(page).find("#email-error").html("<span style='color:#A94442;'>Unable to delete list!</span>");
+
+								} 
+							},
+							error: function (xhr, type) {
+
+								$(page).find("#email-error").html("<span style='color:#A94442;'>List could not be deleted - please try again later.</span>");
+
+							}
+
+						});
+                                    });
+                                			   }
+                                });   
+                                                       
+                                
+							},
+							error: function (xhr, type) {
+
+							
+							}
+
+						});
+                  
+              
+
+		});
+
+
+
+		App.controller('next-shopping', function (page) {
+			YUI().use('calendar' , 'datatype-date', function (Y) {
+
+  // Create a new instance of Calendar, setting its width
+  // and height, allowing the dates from the previous
+  // and next month to be visible and setting the initial
+  // date to be November, 1982.
+  var calendar = new Y.Calendar({
+          contentBox: ".event",
+          height:'100%',
+          width:'100%',
+          showPrevMonth: true,
+          showNextMonth: true,
+          date: new Date()}).render();
+          
+          // Get a reference to Y.DataType.Date
+    var dtdate = Y.DataType.Date;
+   
+
+    // Listen to calendar's selectionChange event.
+    calendar.on("selectionChange", function (ev) {
+    
+
+      // Get the date from the list of selected
+      // dates returned with the event (since only
+      // single selection is enabled by default,
+      // we expect there to be only one date)
+       var newDate = ev.newSelection[0];
+
+      // Format the date and output it to a DOM
+      // element.
+      Y.one(".event-select").setHTML("<div class='app-section event-select'><p>Your Next Shopping Day will be "+dtdate.format(newDate)+"</p></div>");
+      
+       $(".event-button").on('click', function(e){
+       		
+       			$.ajax({
+							type: 'GET',
+							url: 'https://php-phexcom.c9users.io/reminder.php?callback=response',
+							// data to be added to query string:
+							data: {
+								date: dtdate.format(newDate),
+								desc: $(page).find("#event-desc").val(),
+							},
+							// type of data we are expecting in return:
+							dataType: 'jsonp',
+							context: $('body'),
+							success: function (data) {
+								
+
+								if (data == "backdate") {
+
+								alert("Date can only be in the future");
+
+								} else if (data == "success") {
+
+									App.load('view-list');
+								} else if (data == "invalid") {
+	
+								
+
+								}
+							},
+							error: function (xhr, type) {
+
+								$(page).find("#event-desc-error").html("<span style='color:#A94442;'>Your email could not be verified - please try again later.</span>");
+
+							}
+
+						});
+       	
+					
+				
+       });
+    });
+    
+    
+
+          
+
+});
+
+	
+    
+		
+
+		});
+		App.controller('contact-us', function (page) {
+			$(page).find('#send-button')
+					.clickable()
+					.on('click', function () {
+
+						var error_contact = "";
+
+						function isValidEmailAddress(emailAddress) {
+							var pattern = /^([a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?\^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+							return pattern.test(emailAddress);
+						}
+
+						if (!isValidEmailAddress($(page).find('#sender-email').val())) {
+
+							error_contact = "<br />Please Enter a Valid Email Address";
+
+						}
+
+
+						/*if ($(page).find('#sender-email').val() === "") {
+
+							error_contact = "<br />Please Enter a Valid Email Address";
+
+						}*/
+						if ($(page).find('#subject').val() === "") {
+
+							error_contact = "<br />Please enter a subject";
+
+
+						};
+						if ($(page).find('#message').val() === "") {
+
+							error_contact = "<br />Please Enter your message";
+
+						}
+
+						if (error_contact == "") {
+							$(page).find(".error-contact").hide();
+
+							$.ajax({
+								type: 'GET',
+								url: 'http://php-phexcom.c9users.io/mailer.php?callback=response',
+								// data to be added to query string:
+								data: {
+									from: $("#sender-email").val(),
+									subject: $("#subject").val(),
+									message: $("#message").val()
+								},
+								// type of data we are expecting in return:
+								dataType: 'jsonp',
+								context: $('body'),
+								success: function (data) {
+
+									if (data.success == true) {
+
+										$(page).find("#success-messages").html("Your email was sent successfully!").show();
+
+									} else {
+
+										$(page).find("#success-messages").html("Your email could not be sent - please try again later.").show();
+
+									}
+
+
+								},
+								error: function (xhr, type) {
+
+									$(page).find("#success").html("Your email could not be sent - please try again later.").show();
+
+								}
+							})
+
+
+							//$(page).find("#contact_us").empty();
+
+
+						} else {
+							$(page).find(".error-contact").html(error_contact);
+						}
+
+
+					});
+
+		});
+
+
+
+
+		try {
+			App.restore();
+		} catch (err) {
+			App.load('home');
+		}
+	</script>
+	
+
+</body>
+
+</html>
